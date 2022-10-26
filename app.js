@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(morgan('common'));
 
-app.get('/', (req, res) => {
+app.get('/api/v1/', (req, res) => {
 	res.send('Welcome to Cracked Ink');
 });
 
