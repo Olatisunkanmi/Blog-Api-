@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const dotenv = require('dotenv').config();
+const errController = require('./Controllers/ErrorController');
 
 const app = express();
 app.use(express.json());
@@ -18,5 +19,7 @@ app.all('*', (req, res, next) => {
 		),
 	);
 });
+
+app.use(errController);
 
 module.exports = app;
