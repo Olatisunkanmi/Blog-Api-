@@ -3,7 +3,10 @@ const AppError = require('../utils/AppError');
 module.exports = (fn) => {
 	return (req, res, next) => {
 		fn(req, res, next).catch((err) =>
-			next(new AppError(err.message, 401)),
+			res.status(401).json({
+				status: 'Failed',
+				message: err.message,
+			}),
 		);
 	};
 };
