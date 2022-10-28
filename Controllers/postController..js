@@ -18,9 +18,10 @@ exports.createPost = catchAsync(async (req, res, next) => {
 	Post = await postModel.create({
 		title: title,
 		description: desc,
+		author: author,
 	});
 
-	new AppRes(res, Post, 200);
+	new AppRes(res, Post, 201);
 });
 
 // get All Posts
@@ -28,4 +29,10 @@ exports.getPosts = catchAsync(async (req, res, next) => {
 	Post = await postModel.find();
 
 	new AppRes(res, Post, 200);
+});
+
+exports.deletePosts = catchAsync(async (req, res, next) => {
+	await postModel.findByIdAndDelete(req.params.id);
+
+	new AppRes(res, null, 200);
 });
