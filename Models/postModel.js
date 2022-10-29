@@ -30,13 +30,11 @@ const PostSchema = new Schema({
 		default: 0,
 	},
 	tags: [String],
-
-	created_at: String,
-
 	__v: {
 		type: Number,
 		select: false,
 	},
+	created_at: String,
 });
 
 const Post = mongoose.model('Post', PostSchema);
