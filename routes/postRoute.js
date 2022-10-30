@@ -6,4 +6,6 @@ router
 	.get(postController.getPosts)
 	.post(postController.createPost);
 
+router.route('/publish/:id').post(postController.publishPosts);
+
 module.exports = router;
