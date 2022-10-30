@@ -31,8 +31,23 @@ exports.getPosts = catchAsync(async (req, res, next) => {
 	new AppRes(res, Post, 200);
 });
 
+// delete Post
 exports.deletePosts = catchAsync(async (req, res, next) => {
 	await postModel.findByIdAndDelete(req.params.id);
 
 	new AppRes(res, null, 200);
+});
+
+// Publish Post
+exports.publishPosts = catchAsync(async (req, res, next) => {
+	Post = await postModel.findByIdAndUpdate(
+		req.params.id,
+		{ state: 'published' },
+		{
+			new: true,
+			runValidators: true,
+		},
+	);
+
+	new AppRes(res, Post, 200);
 });
