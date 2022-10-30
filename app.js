@@ -4,6 +4,7 @@ const dotenv = require('dotenv').config();
 const errController = require('./Controllers/ErrorController');
 const USERROUTER = require('./routes/userRoute');
 const POSTROUTER = require('./routes/postRoute');
+const AppError = require('./utils/AppError');
 
 const app = express();
 app.use(express.json());
