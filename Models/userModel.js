@@ -5,11 +5,11 @@ const bcrypt = require('bcryptjs');
 
 const UserSchema = new Schema(
 	{
-		first_name: {
+		firstName: {
 			type: String,
 			required: [true, 'User must have First name'],
 		},
-		last_name: {
+		lastName: {
 			type: String,
 			required: [true, 'User must have Last Name '],
 		},
@@ -22,10 +22,18 @@ const UserSchema = new Schema(
 		password: {
 			type: String,
 			required: [true, 'Please provide your Password'],
-			minlenght: 8,
 			select: false,
 		},
-
+		password_confirm: {
+			type: String,
+			required: [true, 'Please provide your Confirm Password'],
+			validate: {
+				validator: function (el) {
+					return el === this.password;
+				},
+				message: 'Passwords do not match',
+			},
+		},
 		__v: {
 			type: Number,
 			select: false,
