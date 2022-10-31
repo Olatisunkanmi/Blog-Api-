@@ -6,6 +6,12 @@ const AppError = require('../utils/AppError');
 // uiniversal User variable
 var User;
 
+exports.getUsers = catchAsync(async (req, res, next) => {
+	User = await userModel.find();
+
+	new AppRes(res, User, 200);
+});
+
 // delete a User
 exports.deleteUser = catchAsync(async (req, res, next) => {
 	User = await userModel.findByIdAndDelete(req.params.id);
