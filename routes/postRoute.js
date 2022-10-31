@@ -12,4 +12,6 @@ router.route('/:id').post(postController.getAPost);
 
 router.route('/:id').delete(postController.deletePosts);
 
+router.route('/:id').patch(postController.updatePost);
+
 module.exports = router;
