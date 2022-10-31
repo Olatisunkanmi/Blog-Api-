@@ -51,3 +51,31 @@ exports.publishPosts = catchAsync(async (req, res, next) => {
 
 	new AppRes(res, Post, 200);
 });
+
+// Get Posts
+exports.getAPost = catchAsync(async (req, res, next) => {
+	Post = await postModel.findById(req.params.id);
+
+	if (Post.state === 'draft' || !User) {
+		return next(
+			new AppError(
+				'You are not alllowed to View to view this Post',
+				403,
+			),
+		);
+	}
+
+	new AppRes(res, Post, 200);
+});
+
+exports.deletePosts = catchAsync(async (req, res, next) => {
+	Post = await postModel.findById(req.params.id);
+
+	if (Post.author !== User.email) {
+		return next(
+			new AppError('You are only allowed to delete your Posts', 403),
+		);
+	}
+
+	new AppRes(res, Post, 200);
+});
