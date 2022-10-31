@@ -77,5 +77,10 @@ exports.deletePosts = catchAsync(async (req, res, next) => {
 		);
 	}
 
+	await postModel.findOneAndDelete(req.params.id);
+
 	new AppRes(res, Post, 200);
 });
+
+// edit
+exports.updatePost = catchAsync(async (req, res, next) => {});
