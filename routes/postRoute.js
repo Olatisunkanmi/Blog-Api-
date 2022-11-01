@@ -11,6 +11,10 @@ router
 	.route('/publish/:id')
 	.post(Protect, postController.publishPosts);
 
+router
+	.route('/articles')
+	.get(Protect, postController.sortUser, postController.getPosts);
+
 router.route('/:id').get(Protect, postController.getAPost);
 
 router.route('/:id').delete(Protect, postController.deletePosts);
