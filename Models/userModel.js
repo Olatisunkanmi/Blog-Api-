@@ -5,6 +5,11 @@ const bcrypt = require('bcryptjs');
 
 const UserSchema = new Schema(
 	{
+		username: {
+			type: String,
+			required: [true, 'User must have an Email address'],
+			unique: true,
+		},
 		firstName: {
 			type: String,
 			required: [true, 'User must have First name'],
@@ -50,6 +55,10 @@ UserSchema.pre('save', async function (next) {
 	if (!this.isModified('password')) return next();
 
 	this.password = await bcrypt.hash(this.password, 12);
+	this.password_confirm = await bcrypt.hash(
+		this.password_confirm,
+		12,
+	);
 	next();
 });
 

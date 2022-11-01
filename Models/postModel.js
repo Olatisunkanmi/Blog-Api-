@@ -10,7 +10,6 @@ const PostSchema = new Schema({
 	description: {
 		type: String,
 		required: true,
-		unique: true,
 	},
 	author: {
 		type: String,

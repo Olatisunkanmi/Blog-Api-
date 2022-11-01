@@ -1,17 +1,20 @@
 const router = require('express').Router();
 const postController = require('../Controllers/postController.');
+const { Protect } = require('../Controllers/auth');
 
 router
 	.route('/')
 	.get(postController.getPosts)
-	.post(postController.createPost);
+	.post(Protect, postController.createPost);
 
-router.route('/publish/:id').post(postController.publishPosts);
+router
+	.route('/publish/:id')
+	.post(Protect, postController.publishPosts);
 
-router.route('/:id').post(postController.getAPost);
+router.route('/:id').get(Protect, postController.getAPost);
 
-router.route('/:id').delete(postController.deletePosts);
+router.route('/:id').delete(Protect, postController.deletePosts);
 
-router.route('/:id').patch(postController.updatePost);
+router.route('/:id').patch(Protect, postController.updatePost);
 
 module.exports = router;
