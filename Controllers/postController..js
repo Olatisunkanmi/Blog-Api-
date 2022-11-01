@@ -6,7 +6,11 @@ const AppError = require('../utils/AppError');
 // universal Post variable
 var Post;
 
-exports.query = catchAsync(async (req, res, next) => {});
+exports.sortUser = catchAsync(async (req, res, next) => {
+	console.log(req.curUser);
+	req.query.author = req.curUser.email;
+	next();
+});
 
 // create a Post
 exports.createPost = catchAsync(async (req, res, next) => {
@@ -32,37 +36,6 @@ exports.getPosts = catchAsync(async (req, res, next) => {
 	const queryObj = { ...req.query };
 	const excludedFields = ['page', 'sort', 'limit', 'fields'];
 	excludedFields.forEach((el) => delete queryObj[el]);
-
-	// 2) Sorting.
-	// if (req.query.sort) {
-	// 	console.log(req.query.sort);
-	// 	let sortBy = req.query.sort.split(',').join(' ');
-	// 	query = query.sort(sortBy);
-	// } else {
-	// 	query = query.sort('-createdAt');
-	// }
-
-	// 3)  Limitig Fields
-	// if (req.query.fields) {
-	// 	const fields = req.query.fields.split(',').join(' ');
-	// 	query = query.select(fields);
-	// }
-	// else {
-	//   query = query.select('__v');
-	// }
-
-	// 4) Pagination
-	const page = req.query.page * 1 || 1;
-	const limit = req.query.limit * 1 || 100;
-	//👆🏼   turn string to int
-	const skip = (page - 1) * limit;
-	query = query.skip(skip).limit(limit);
-	if (req.query.page) {
-		const numTours = await postModel.countDocuments();
-		if (skip > numTours) throw new Error('This page does not exist');
-	}
-
-	// const Post = await query;
 
 	Post = await postModel.find(queryObj);
 
