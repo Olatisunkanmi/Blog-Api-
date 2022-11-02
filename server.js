@@ -24,11 +24,13 @@ mongoose
 		useUnifiedTopology: true,
 	})
 	.then(console.log('DB connected'));
+
 // sever listen.
 const server_one = new Server(app, process.env.PORT || 3000).listen();
 
 // Node Error Handing
 //
+
 process.on('unhandledRejection', (err) => {
 	console.log(err.name, err.message);
 	server_one.close(() => {
