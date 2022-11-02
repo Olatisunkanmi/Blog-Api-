@@ -68,16 +68,21 @@ exports.publishPosts = catchAsync(async (req, res, next) => {
 	new AppRes(res, Post, 200);
 });
 
-// Get Posts
+// Get Post by ID
 exports.getPostById = catchAsync(async (req, res, next) => {
-	Post = await postModel.findByIdAndUpdate(
-		req.params.id,
-		{ readCount: +1 },
-		{
-			new: true,
-			runValidators: true,
-		},
-	);
+	Post = await postModel.findById(req.params.id);
+
+	if (Post.state !== 'published')
+		return next(
+			new AppError(
+				'Not Logged in Users cannot view unpublished posts',
+				401,
+			),
+		);
+
+	// update blog read count
+	Post.readCount += 1;
+	await Post.save();
 
 	new AppRes(res, Post, 200);
 });
