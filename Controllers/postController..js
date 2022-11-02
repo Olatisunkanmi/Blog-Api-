@@ -17,7 +17,6 @@ exports.createPost = catchAsync(async (req, res, next) => {
 	const { title, desc } = req.body;
 
 	if (!title || !desc) {
-		console.log('Missing Something');
 		return next(new AppError('Missing Parameters', 404));
 	}
 
@@ -74,8 +73,6 @@ exports.getAPost = catchAsync(async (req, res, next) => {
 		},
 	);
 
-	console.log(Post);
-
 	if (!req.curUser || !req.curUser.username !== Post.author) {
 		return next(
 			new AppError(
@@ -88,6 +85,7 @@ exports.getAPost = catchAsync(async (req, res, next) => {
 	new AppRes(res, Post, 200);
 });
 
+// delete Posts
 exports.deletePosts = catchAsync(async (req, res, next) => {
 	Post = await postModel.findById(req.params.id);
 
