@@ -25,12 +25,12 @@ router
 	.get(postController.sortUser, postController.getPosts);
 
 // Get a Post
-router.route('/articles/:id').get(postController.getPostById);
+router.route('/:id').get(postController.getPostById);
 
 // Delete a Post
-router.route('/articles/:id').delete(postController.deletePosts);
+router.route('/:id').delete(postController.deletePosts);
 
 // update Post
-router.route('/articles/:id').patch(postController.updatePost);
+router.route('/:id').patch(postController.updatePost);
 
 module.exports = router;
