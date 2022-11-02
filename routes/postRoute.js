@@ -2,23 +2,35 @@ const router = require('express').Router();
 const postController = require('../Controllers/postController.');
 const { Protect } = require('../Controllers/auth');
 
+// Logged in or Not Logged In users to get all published posts
 router
 	.route('/')
-	.get(postController.getPosts)
-	.post(Protect, postController.createPost);
+	.get(postController.Published, postController.getPosts);
 
-router
-	.route('/publish/:id')
-	.post(Protect, postController.publishPosts);
+// Logged in or Not Logged In users to get post by Id
+router.route('/:id').get(postController.getPostById);
 
+// Protect routes below with JWT.
+router.use(Protect);
+
+// create Post
+router.route('/').post(postController.createPost);
+
+// publish post
+router.route('/publish/:id').post(postController.publishPosts);
+
+//Users get all articles
 router
 	.route('/articles')
-	.get(Protect, postController.sortUser, postController.getPosts);
+	.get(postController.sortUser, postController.getPosts);
 
-router.route('/:id').get(Protect, postController.getAPost);
+// Get a Post
+router.route('/articles/:id').get(postController.getPostById);
 
-router.route('/:id').delete(Protect, postController.deletePosts);
+// Delete a Post
+router.route('/articles/:id').delete(postController.deletePosts);
 
-router.route('/:id').patch(Protect, postController.updatePost);
+// update Post
+router.route('/articles/:id').patch(postController.updatePost);
 
 module.exports = router;
