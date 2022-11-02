@@ -6,6 +6,12 @@ const AppError = require('../utils/AppError');
 // universal Post variable
 var Post;
 
+exports.Published = catchAsync(async (req, res, next) => {
+	req.query.state = 'published';
+
+	next();
+});
+
 exports.sortUser = catchAsync(async (req, res, next) => {
 	console.log(req.curUser);
 	req.query.author = req.curUser.email;
@@ -63,7 +69,7 @@ exports.publishPosts = catchAsync(async (req, res, next) => {
 });
 
 // Get Posts
-exports.getAPost = catchAsync(async (req, res, next) => {
+exports.getPostById = catchAsync(async (req, res, next) => {
 	Post = await postModel.findByIdAndUpdate(
 		req.params.id,
 		{ readCount: +1 },
@@ -72,15 +78,6 @@ exports.getAPost = catchAsync(async (req, res, next) => {
 			runValidators: true,
 		},
 	);
-
-	if (!req.curUser || !req.curUser.username !== Post.author) {
-		return next(
-			new AppError(
-				'You are not alllowed to View to view this Post',
-				403,
-			),
-		);
-	}
 
 	new AppRes(res, Post, 200);
 });
