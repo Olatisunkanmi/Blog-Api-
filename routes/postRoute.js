@@ -16,21 +16,21 @@ router.use(Protect);
 // create Post
 router.route('/').post(postController.createPost);
 
-// publish post
-router.route('/publish/:id').post(postController.publishPosts);
-
-//Users get all articles
-router
-	.route('/articles')
-	.get(postController.sortUser, postController.getPosts);
-
-// Get a Post
-router.route('/:id').get(postController.getPostById);
-
 // Delete a Post
 router.route('/:id').delete(postController.deletePosts);
 
 // update Post
 router.route('/:id').patch(postController.updatePost);
+
+// publish post
+router.route('/publish/:id').post(postController.publishPosts);
+
+// Get a Post
+router.route('/articles/:id').post(postController.getPostById);
+
+// Logged in user get only Posts created by them.
+router
+	.route('/articles')
+	.post(postController.sortUser, postController.getPosts);
 
 module.exports = router;
