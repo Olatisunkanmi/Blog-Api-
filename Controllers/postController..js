@@ -6,6 +6,13 @@ const AppError = require('../utils/AppError');
 // universal Post variable
 var Post;
 
+exports.new = catchAsync(async (req, res, next) => {
+	console.log('object');
+	next();
+});
+
+// Middleware to query post by Published state
+
 exports.Published = catchAsync(async (req, res, next) => {
 	req.query.state = 'published';
 
@@ -13,7 +20,6 @@ exports.Published = catchAsync(async (req, res, next) => {
 });
 
 exports.sortUser = catchAsync(async (req, res, next) => {
-	console.log(req.curUser);
 	req.query.author = req.curUser.email;
 	next();
 });
@@ -56,6 +62,8 @@ exports.deletePosts = catchAsync(async (req, res, next) => {
 
 // Publish Post
 exports.publishPosts = catchAsync(async (req, res, next) => {
+	console.log('object');
+
 	Post = await postModel.findByIdAndUpdate(
 		req.params.id,
 		{ state: 'published' },
@@ -72,14 +80,17 @@ exports.publishPosts = catchAsync(async (req, res, next) => {
 exports.getPostById = catchAsync(async (req, res, next) => {
 	Post = await postModel.findById(req.params.id);
 
-	if (Post.state !== 'published')
+	if (!Post) {
+		return next(new AppError('Post does not exist', 401));
+	} // --
+	else if (!req.curUser && Post.state !== 'published') {
+		return next(new AppError('Login to view unpublished posts', 401));
+	} // --
+	else if (req.curUser.email !== Post.author) {
 		return next(
-			new AppError(
-				'Not Logged in Users cannot view unpublished posts',
-				401,
-			),
+			new AppError('Can only view your posts in draft state', 401),
 		);
-
+	}
 	// update blog read count
 	Post.readCount += 1;
 	await Post.save();
@@ -93,7 +104,7 @@ exports.deletePosts = catchAsync(async (req, res, next) => {
 
 	if (Post.author !== req.user.username) {
 		return next(
-			new AppError('You are only allowed to delete your Posts', 403),
+			new AppError('You are only allowed to delete your Posts', 404),
 		);
 	}
 
@@ -108,11 +119,11 @@ exports.updatePost = catchAsync(async (req, res, next) => {
 
 	if (Post.author !== req.user.username) {
 		return next(
-			new AppError('You are only allowed to edit your Posts', 403),
+			new AppError('You are only allowed to edit your Posts', 404),
 		);
 	}
 
-	await postModel.findByIdAndUpdate(req.params.id, req.body, {
+	Post = await postModel.findByIdAndUpdate(req.params.id, req.body, {
 		set: true,
 		runValidators: true,
 	});
