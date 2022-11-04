@@ -11,9 +11,15 @@ module.exports = (err, req, res, next) => {
 		});
 	};
 
+	const handleErrorDB = (err) => {
+		const message = `Invallid ${err.path} : ${err.value}. `;
+		return new AppError(message, 400);
+	};
+
 	if (process.env.NODE_ENV === 'development') {
 		let error = { ...err };
-
+		// console.log(err);
+		if (err.name == 'CastError ') error = handleErrorDB(err);
 		handleDevError(err, res);
 	} else if (process.env.NODE_ENV === 'production') {
 		let Error = { ...err };
