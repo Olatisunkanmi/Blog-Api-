@@ -26,12 +26,6 @@ exports.Register = catchAsync(async (req, res, next) => {
 		username,
 	} = req.body;
 
-	console.log(req.body);
-
-	// if (!firstName || !lastName || !email || !password) {
-	// 	return next(new AppError('Missing Parameters '));
-	// }
-
 	User = await userModel.create({
 		firstName: firstName,
 		lastName: lastName,
@@ -42,7 +36,7 @@ exports.Register = catchAsync(async (req, res, next) => {
 	});
 
 	const TOKEN = SIGNTOKEN(User._id);
-	new AppRes(res, User, 201, TOKEN);
+	new AppRes(res, User, 201);
 });
 
 // Login
@@ -79,7 +73,10 @@ exports.Protect = catchAsync(async (req, res, next) => {
 	}
 
 	if (!TOKEN) {
-		return next(new AppError('Login to get accees', 401));
+		return next(
+			new AppError('Login to get accees', 401),
+			// res.redirect(301, '/'),
+		);
 	}
 
 	// decode token is REAL
