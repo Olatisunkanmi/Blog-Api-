@@ -88,8 +88,16 @@ exports.getPostById = catchAsync(async (req, res, next) => {
 	} // --
 	else if (req.curUser.email !== Post.author) {
 		return next(
-			new AppError('Can only view your posts in draft state', 401),
+			new AppError(
+				'Can only view posts created by you in draft state',
+				401,
+			),
 		);
+	} else if (
+		req.curUser.email === Post.author &&
+		Post.state !== 'published'
+	) {
+		return next(new AppRes(res, Post, 200));
 	}
 	// update blog read count
 	Post.readCount += 1;
