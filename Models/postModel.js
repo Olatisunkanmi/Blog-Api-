@@ -4,16 +4,20 @@ const Schema = mongoose.Schema;
 const PostSchema = new Schema({
 	title: {
 		type: String,
-		required: true,
+		required: [true, 'Post must have a title'],
 		unique: true,
 	},
 	description: {
 		type: String,
-		required: true,
+		required: [true, 'Post must have a description'],
+	},
+	body: {
+		type: String,
+		require: true,
 	},
 	author: {
 		type: String,
-		required: true,
+		required: [true, 'Post must have an author'],
 	},
 	state: {
 		type: String,
@@ -28,7 +32,9 @@ const PostSchema = new Schema({
 		type: Number,
 		default: 0,
 	},
-	tags: [String],
+	tags: {
+		type: [String],
+	},
 	__v: {
 		type: Number,
 		select: false,

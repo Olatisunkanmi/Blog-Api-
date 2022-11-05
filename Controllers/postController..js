@@ -2,7 +2,7 @@ const postModel = require('../Models/postModel');
 const catchAsync = require('../utils/CatchAsync');
 const AppRes = require('../utils/AppResponse');
 const AppError = require('../utils/AppError');
-
+const readingTime = require('../utils/readTime');
 // universal Post variable
 var Post;
 
@@ -38,36 +38,34 @@ exports.protectedPostById = catchAsync(async (req, res, next) => {
 	next();
 });
 
-exports.new = catchAsync(async (req, res, next) => {
-	console.log('object');
-	next();
-});
-
 // Middleware to query post by Published state
-
 exports.Published = catchAsync(async (req, res, next) => {
 	req.query.state = 'published';
 
 	next();
 });
 
+// query by username
 exports.sortUser = catchAsync(async (req, res, next) => {
-	req.query.author = req.curUser.email;
+	req.query.author = req.curUser.username;
 	next();
 });
 
 // create a Post
 exports.createPost = catchAsync(async (req, res, next) => {
-	const { title, desc } = req.body;
+	const { title, desc, body, tags } = req.body;
 
-	if (!title || !desc) {
+	if (!title || !desc || !body) {
 		return next(new AppError('Missing Parameters', 404));
 	}
 
 	Post = await postModel.create({
 		title: title,
+		body: body,
+		tags,
 		description: desc,
-		author: req.curUser.email,
+		author: req.curUser.username,
+		readingTime: readingTime(body),
 	});
 
 	new AppRes(res, Post, 201);
@@ -85,19 +83,18 @@ exports.getPosts = catchAsync(async (req, res, next) => {
 	new AppRes(res, Post, 200);
 });
 
-// delete Post
-exports.deletePosts = catchAsync(async (req, res, next) => {
-	await postModel.findByIdAndDelete(req.params.id);
-
-	new AppRes(res, null, 200);
-});
-
 // Publish Post
 exports.publishPosts = catchAsync(async (req, res, next) => {
-	console.log('object');
+	Post = await postModel.findById(req.params.id);
 
-	Post = await postModel.findByIdAndUpdate(
-		req.params.id,
+	if (Post.author !== req.user.username) {
+		return next(
+			new AppError('You are only allowed to publish your Posts', 404),
+		);
+	}
+
+	Post = await postModel.findOneAndUpdate(
+		Post._id,
 		{ state: 'published' },
 		{
 			new: true,
@@ -129,12 +126,12 @@ exports.deletePosts = catchAsync(async (req, res, next) => {
 		);
 	}
 
-	await postModel.findOneAndDelete(req.params.id);
+	await postModel.findOneAndDelete(Post._id);
 
-	new AppRes(res, Post, 200);
+	new AppRes(res, null, 200);
 });
 
-// edit
+// edit Posts
 exports.updatePost = catchAsync(async (req, res, next) => {
 	Post = await postModel.findById(req.params.id);
 
@@ -144,7 +141,7 @@ exports.updatePost = catchAsync(async (req, res, next) => {
 		);
 	}
 
-	Post = await postModel.findByIdAndUpdate(req.params.id, req.body, {
+	Post = await postModel.findByIdAndUpdate(Post._id, req.body, {
 		set: true,
 		runValidators: true,
 	});
