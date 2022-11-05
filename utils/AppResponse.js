@@ -11,4 +11,5 @@ class responseHandler {
 		});
 	}
 }
+
 module.exports = responseHandler;
