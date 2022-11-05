@@ -6,6 +6,38 @@ const AppError = require('../utils/AppError');
 // universal Post variable
 var Post;
 
+exports.unprotectedPostById = catchAsync(async (req, res, next) => {
+	Post = await postModel.findById(req.params.id);
+
+	if (!Post) {
+		return next(new AppError('Post not found', 404));
+	} //-
+	else if (!req.curUser && Post.state !== 'published') {
+		return next(new AppError('Login to view unpublished posts', 401));
+	} // --
+
+	req.Post = Post;
+	next();
+});
+
+exports.protectedPostById = catchAsync(async (req, res, next) => {
+	if (req.curUser.email !== Post.author) {
+		return next(
+			new AppError(
+				'Can only view posts created by you in draft state',
+				401,
+			),
+		);
+	} else if (
+		req.curUser.email === Post.author &&
+		Post.state !== 'published'
+	) {
+		return next(new AppRes(res, Post, 200));
+	}
+
+	next();
+});
+
 exports.new = catchAsync(async (req, res, next) => {
 	console.log('object');
 	next();
@@ -78,27 +110,8 @@ exports.publishPosts = catchAsync(async (req, res, next) => {
 
 // Get Post by ID
 exports.getPostById = catchAsync(async (req, res, next) => {
-	Post = await postModel.findById(req.params.id);
+	Post = req.Post;
 
-	if (!Post) {
-		return next(new AppError('Post does not exist', 401));
-	} // --
-	else if (!req.curUser && Post.state !== 'published') {
-		return next(new AppError('Login to view unpublished posts', 401));
-	} // --
-	else if (req.curUser.email !== Post.author) {
-		return next(
-			new AppError(
-				'Can only view posts created by you in draft state',
-				401,
-			),
-		);
-	} else if (
-		req.curUser.email === Post.author &&
-		Post.state !== 'published'
-	) {
-		return next(new AppRes(res, Post, 200));
-	}
 	// update blog read count
 	Post.readCount += 1;
 	await Post.save();
