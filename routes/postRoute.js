@@ -8,7 +8,12 @@ router
 	.get(postController.Published, postController.getPosts);
 
 // Logged in or Not Logged In users to get post by Id
-router.route('/:id').get(postController.getPostById);
+router
+	.route('/:id')
+	.get(
+		postController.unprotectedPostById,
+		postController.getPostById,
+	);
 
 // Protect routes below with JWT.
 router.use(Protect);
@@ -26,7 +31,13 @@ router.route('/:id').patch(postController.updatePost);
 router.route('/publish/:id').post(postController.publishPosts);
 
 // Get a Post
-router.route('/articles/:id').post(postController.getPostById);
+router
+	.route('/articles/:id')
+	.post(
+		postController.unprotectedPostById,
+		postController.protectedPostById,
+		postController.getPostById,
+	);
 
 // Logged in user get only Posts created by them.
 router
