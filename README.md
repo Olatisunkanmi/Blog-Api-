@@ -37,7 +37,7 @@ This is an api for a pizza app
 
 ## Base URL
 
-- https://sore-tan-seal-wrap.cyclic.app/api/v1
+- https://sore-tan-seal-wrap.cyclic.app/api/v1/
 
 ## Models
 
@@ -77,7 +77,7 @@ This is an api for a pizza app
 
 ### Signup User
 
-- Route: /api/v1/signup
+- Route: /users/signup
 - Method: POST
 - Body:
 
@@ -119,7 +119,7 @@ Success
 
 ### Login User
 
-- Route: /api/v1/login
+- Route: /users/login
 - Method: POST
 - Body:
 
@@ -137,18 +137,19 @@ Success
 ```
 {
     "status": "success",
+    "TOKEN": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNjc1OGMyZjM3NGYyYTJlMTI0ZTBiOCIsImlhdCI6MTY2Nzc1MjgzMiwiZXhwIjoxNjY3NzU2NDMyfQ.tSmcnRUpu7rxV-xPGyPU8ORU17o1XBdFAZV3_j2GDY4",
     "data": {
-        "_id": "6360f290cdaa378f2c9090e4",
-        "password": "$2a$12$K.nq8E2.7NWNzoqXlrK/yOKHNwisxQR9sI8sM/9a8Xzm9nqoxqCCe"
+        "_id": "636758c2f374f2a2e124e0b8",
+        "password": "$2a$12$rYIFXixVx4tKVdxjUmxYSe7usx4iHQB4vFGsqPJhYfYZRnOCqhl9W"
     }
 }
 ```
 
 ---
 
-### Create Order
+### Create Post
 
-- Route: /api/v2/posts/
+- Route: /posts/
 - Method: POST
 - Header
   - Authorization: Bearer {token}
@@ -156,8 +157,10 @@ Success
 
 ```
 {
-   "title": "What are we ?",
-    "desc" : ".shsu uueuuc ueceb Veritatis obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit, quia. Quo quibusdam sed amet tempora. Sit laborum ab, eius fugit doloribus tenetur  fugiat, temporibus enim commodi iusto libero magni deleniti quod quam  consequuntur! Commodi minima excepturi repudiandae velit hic maxime"
+   "title": "Js is better",
+   "desc" : "Old  description",
+    "body" : "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribr-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribr-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less ",
+    "tags" : "read, write"
 
 }
 ```
@@ -170,14 +173,17 @@ Success
 {
     "status": "success",
     "data": {
-        "title": "What are we ?",
-        "description": ".shsu uueuuc ueceb Veritatis obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit, quia. Quo quibusdam sed amet tempora. Sit laborum ab, eius fugit doloribus tenetur  fugiat, temporibus enim commodi iusto libero magni deleniti quod quam  consequuntur! Commodi minima excepturi repudiandae velit hic maxime",
-        "author": "lazy@gmail.com",
+        "title": "Js is better",
+        "description": "Old  description",
+        "body": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribr-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribr-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less ",
+        "author": "user",
         "state": "draft",
         "readCount": 0,
-        "readingTime": 0,
-        "tags": [],
-        "_id": "6365fdee7803b829990c2894",
+        "readingTime": 2,
+        "tags": [
+            "read, write"
+        ],
+        "_id": "6368299d05fb6d01bc39459f",
         "__v": 0
     }
 }
@@ -185,9 +191,9 @@ Success
 
 ---
 
-### Get Order
+### Get Post
 
-- Route: /orders/:id
+- Route: /posts/:id
 - Method: GET
 - Header
   - Authorization: Bearer {token}
@@ -197,45 +203,161 @@ Success
 
 ```
 {
-    state: 1,
-    total_price: 900,
-    created_at: Mon Oct 31 2022 08:35:00 GMT+0100,
-    items: [{ name: 'chicken pizza', price: 900, size: 'm', quantity: 1}]
+    "status": "success",
+    "data": {
+        "_id": "63675bc358ecc015c6efd868",
+        "title": " Hello world",
+        "description": "Old  description",
+        "body": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a has a more-or-less normal distribr-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribr-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less ",
+        "author": "user",
+        "state": "published",
+        "readCount": 0,
+        "readingTime": 3,
+        "tags": [
+            "read, write"
+        ]
+    }
 }
 ```
 
----
+### Publish Post
 
-### Get Orders
-
-- Route: /orders
-- Method: GET
-- Header:
+- Route: /posts/publish/:id
+- Method: POST
+- Header
   - Authorization: Bearer {token}
-- Query params:
-  - page (default: 1)
-  - per_page (default: 10)
-  - order_by (default: created_at)
-  - order (options: asc | desc, default: desc)
-  - state
-  - created_at
 - Responses
 
 Success
 
 ```
 {
-    state: 1,
-    total_price: 900,
-    created_at: Mon Oct 31 2022 08:35:00 GMT+0100,
-    items: [{ name: 'chicken pizza', price: 900, size: 'm', quantity: 1}]
+    "status": "success",
+    "data": {
+        "_id": "63675bc358ecc015c6efd868",
+        "title": " Hello world",
+        "description": "Old  description",
+        "body": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a has a more-or-less normal distribr-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribr-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less ",
+        "author": "user",
+        "state": "published",
+        "readCount": 0,
+        "readingTime": 3,
+        "tags": [
+            "read, write"
+        ]
+    }
 }
 ```
 
 ---
 
+### Get Posts
+
+- Route: /posts/
+- Method: GET
+- Header:
+  - Authorization: Bearer {token}
+- Query params:
+  - page (default: 1)
+  - per_page (default: 20)
+  - sort (default: -readCount, -readingTime, -created_at)
+  - sort (options: asc | desc, default: desc)
+  - state (default : published)
+- Responses
+
+Success
+
+```
+[
+    "Lists of all Posts in the Database"
+]
+```
+
+---
+
+### Get all Posts by Authenticated User
+
+- Route: /posts/
+- Method: GET
+- Header:
+  - Authorization: Bearer {token}
+  - Query params:
+    - page (default: 1)
+  - per_page (default: 20)
+  - sort (default: -readCount, -readingTime, -created_at)
+  - order (options: asc | desc, default: desc)
+- author ( default : Username )
+
+- Responses
+
+Success
 ...
 
-## Contributor
+### Update Post Content
 
-- Daniel Adesoji
+- Route: /posts/:id
+- Method: POST
+- Header:
+
+  - Authorization: Bearer {token}
+
+  Body
+
+  ```
+  {
+    "title" : "A New Title",
+    "body": "Hello again to the new good"
+  }
+  ```
+
+-Response
+
+Success
+
+```
+{
+    "status": "success",
+    "data": {
+        "_id": "63675bd158ecc015c6efd86b",
+        "title": "A New Title",
+        "description": "Old  description",
+        "body": "Hello again to the new good",
+        "author": "user",
+        "state": "draft",
+        "readCount": 0,
+        "readingTime": 1,
+        "tags": [
+            "read, write"
+        ]
+    }
+}
+```
+
+### DELETE A POST
+
+- Route: /posts/:id
+- Method: POST
+- Header:
+  - Authorization: Bearer {token}
+
+-Response
+
+Success
+
+```
+{
+    "status": "success",
+    "data": {}
+}
+```
+
+## Lesson Lerned
+
+- Steep understanding of OOP in NodeJS
+  Database Modelling
+  Database Management
+  Debugging
+  User Authentication
+  Documentation
+  User Authorization
+  Proper Construction of Routes

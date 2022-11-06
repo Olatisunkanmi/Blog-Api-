@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const readingTime = require('../utils/readTime');
 
 const PostSchema = new Schema({
 	title: {

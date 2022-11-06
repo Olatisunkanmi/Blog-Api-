@@ -59,7 +59,7 @@ exports.unprotectedPublishedPosts = catchAsync(
 		req.query.limit = '20';
 		req.query.sort = '-readCount, -readingTime, -created_at';
 		req.query.filter = 'read';
-		// req.query.state = 'published';
+		req.query.state = 'published';
 
 		next();
 	},
@@ -69,7 +69,7 @@ exports.unprotectedPublishedPosts = catchAsync(
 exports.sortByUser = catchAsync(async (req, res, next) => {
 	req.query.limit = '20';
 	req.query.sort = '-readCount, -readingTime, -created_at';
-	req.query.filter = 'read';
+	req.query.filter = '';
 	req.query.author = req.curUser.username;
 	next();
 });
@@ -133,8 +133,7 @@ exports.getPosts = catchAsync(async (req, res, next) => {
 // Publish Post
 exports.publishPosts = catchAsync(async (req, res, next) => {
 	Post = req.Post;
-
-	if (Post.author !== req.user.username) {
+	if (Post.author !== req.curUser.username) {
 		return next(
 			new AppError('You are only allowed to publish your Posts', 404),
 		);
@@ -167,26 +166,23 @@ exports.getPostById = catchAsync(async (req, res, next) => {
 exports.deletePosts = catchAsync(async (req, res, next) => {
 	Post = req.Post;
 
-	if (!Post)
-		if (Post.author !== req.curUser.username) {
-			return next(
-				new AppError(
-					'You are only allowed to delete your Posts',
-					404,
-				),
-			);
-		}
+	if (Post.author !== req.curUser.username) {
+		return next(
+			new AppError('You are only allowed to delete your Posts', 404),
+		);
+	}
 
-	await postModel.findOneAndDelete(Post._id);
+	await postModel.findOneAndDelete(req.params.id);
 
-	new AppRes(res, null, 200);
+	Post = {};
+	new AppRes(res, Post, 200);
 });
 
 // edit Posts
 exports.updatePost = catchAsync(async (req, res, next) => {
 	Post = req.Post;
 
-	if (Post.author !== req.user.username) {
+	if (Post.author !== req.curUser.username) {
 		return next(
 			new AppError('You are only allowed to edit your Posts', 404),
 		);
