@@ -27,16 +27,21 @@ router
 	.post(postController.sortUser, postController.getPosts);
 
 // Middle ware to find all Post by id and return is invalid.
-router.use(postController.search);
 
 // Delete a Post
-router.route('/:id').delete(postController.deletePosts);
+router
+	.route('/:id')
+	.delete(postController.searchId, postController.deletePosts);
 
 // update Post
-router.route('/:id').patch(postController.updatePost);
+router
+	.route('/:id')
+	.patch(postController.searchId, postController.updatePost);
 
 // publish post
-router.route('/publish/:id').post(postController.publishPosts);
+router
+	.route('/publish/:id')
+	.post(postController.searchId, postController.publishPosts);
 
 // Get a Post
 router

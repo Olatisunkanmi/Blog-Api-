@@ -6,7 +6,8 @@ const readingTime = require('../utils/readTime');
 // universal Post variable
 var Post;
 
-exports.search = catchAsync(async (req, res, next) => {
+exports.searchId = catchAsync(async (req, res, next) => {
+	console.log(req.params.id);
 	Post = await postModel.findById(req.params.id);
 	console.log(Post);
 
@@ -21,7 +22,6 @@ exports.search = catchAsync(async (req, res, next) => {
 // middleware for unprotected Post by :id
 exports.unprotectedPostById = catchAsync(async (req, res, next) => {
 	Post = await postModel.findById(req.params.id);
-	console.log(Post);
 
 	if (!Post) {
 		return next(new AppError('Post not found', 404));
