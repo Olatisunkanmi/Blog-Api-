@@ -1,10 +1,10 @@
 const readingTime = (post) => {
-	console.log('object');
 	const noOfWords = post.split(' ').length;
-
-	// if the avg person read 150 words in a minute.
-	const WPM = noOfWords / 150;
-	return Math.round(WPM) === 0 ? 1 : Math.round(wordsPerMinute);
+	// assuming the average person reads 200 words a minute
+	const wordsPerMinute = noOfWords / 200;
+	return Math.round(wordsPerMinute) === 0
+		? 1
+		: Math.round(wordsPerMinute);
 };
 
 module.exports = readingTime;

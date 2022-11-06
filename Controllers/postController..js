@@ -6,8 +6,22 @@ const readingTime = require('../utils/readTime');
 // universal Post variable
 var Post;
 
+exports.search = catchAsync(async (req, res, next) => {
+	Post = await postModel.findById(req.params.id);
+	console.log(Post);
+
+	if (!Post) {
+		return next(new AppError('Post not found', 404));
+	} //-
+
+	req.Post = Post;
+	next();
+});
+
+// middleware for unprotected Post by :id
 exports.unprotectedPostById = catchAsync(async (req, res, next) => {
 	Post = await postModel.findById(req.params.id);
+	console.log(Post);
 
 	if (!Post) {
 		return next(new AppError('Post not found', 404));
@@ -40,6 +54,8 @@ exports.protectedPostById = catchAsync(async (req, res, next) => {
 
 // Middleware to query post by Published state
 exports.Published = catchAsync(async (req, res, next) => {
+	req.query.limit = '20';
+	req.query.sort = '-readCount, -readingTime, -created_at';
 	req.query.state = 'published';
 
 	next();
@@ -78,14 +94,29 @@ exports.getPosts = catchAsync(async (req, res, next) => {
 	const excludedFields = ['page', 'sort', 'limit', 'fields'];
 	excludedFields.forEach((el) => delete queryObj[el]);
 
-	Post = await postModel.find(queryObj);
+	// queryStr = JSON.parse(queryObj);
+	let query = postModel.find(queryObj);
 
+	// 4) Pagination
+	const page = req.query.page * 1 || 1;
+	const limit = req.query.limit * 1 || 100;
+	//👆🏼   turn string to int
+	const skip = (page - 1) * limit;
+	query = query.skip(skip).limit(limit);
+	if (req.query.page) {
+		const numpostModels = await postModel.countDocuments();
+		if (skip > numpostModels)
+			throw new Error('This page does not exist');
+	}
+	// !                    -----------            --Execute query
+
+	const Post = await query;
 	new AppRes(res, Post, 200);
 });
 
 // Publish Post
 exports.publishPosts = catchAsync(async (req, res, next) => {
-	Post = await postModel.findById(req.params.id);
+	Post = req.Post;
 
 	if (Post.author !== req.user.username) {
 		return next(
@@ -118,13 +149,17 @@ exports.getPostById = catchAsync(async (req, res, next) => {
 
 // delete Posts
 exports.deletePosts = catchAsync(async (req, res, next) => {
-	Post = await postModel.findById(req.params.id);
+	Post = req.Post;
 
-	if (Post.author !== req.user.username) {
-		return next(
-			new AppError('You are only allowed to delete your Posts', 404),
-		);
-	}
+	if (!Post)
+		if (Post.author !== req.curUser.username) {
+			return next(
+				new AppError(
+					'You are only allowed to delete your Posts',
+					404,
+				),
+			);
+		}
 
 	await postModel.findOneAndDelete(Post._id);
 
@@ -133,7 +168,7 @@ exports.deletePosts = catchAsync(async (req, res, next) => {
 
 // edit Posts
 exports.updatePost = catchAsync(async (req, res, next) => {
-	Post = await postModel.findById(req.params.id);
+	Post = req.Post;
 
 	if (Post.author !== req.user.username) {
 		return next(

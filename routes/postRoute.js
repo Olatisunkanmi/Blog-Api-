@@ -21,6 +21,14 @@ router.use(Protect);
 // create Post
 router.route('/').post(postController.createPost);
 
+// Logged in user get only Posts created by them.
+router
+	.route('/articles')
+	.post(postController.sortUser, postController.getPosts);
+
+// Middle ware to find all Post by id and return is invalid.
+router.use(postController.search);
+
 // Delete a Post
 router.route('/:id').delete(postController.deletePosts);
 
@@ -38,10 +46,5 @@ router
 		postController.protectedPostById,
 		postController.getPostById,
 	);
-
-// Logged in user get only Posts created by them.
-router
-	.route('/articles')
-	.post(postController.sortUser, postController.getPosts);
 
 module.exports = router;
