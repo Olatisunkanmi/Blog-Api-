@@ -32,6 +32,13 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
 
 // update user
 exports.updateUser = catchAsync(async (req, res) => {
+	User = await userModel.findById(req.params.id);
+
+	if (!User) return next(new AppError('User not Found', 404));
+
+	if (User.email !== req.curUser.email)
+		return next(new AppError('You can only Edit your account', 404));
+
 	User = await userModel.findByIdAndUpdate(req.params.id, req.body, {
 		new: true,
 		runValidators: true,
