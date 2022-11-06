@@ -59,7 +59,7 @@ exports.unprotectedPublishedPosts = catchAsync(
 		req.query.limit = '20';
 		req.query.sort = '-readCount, -readingTime, -created_at';
 		req.query.filter = 'read';
-		req.query.state = 'published';
+		// req.query.state = 'published';
 
 		next();
 	},
