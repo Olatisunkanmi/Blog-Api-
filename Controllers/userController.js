@@ -2,6 +2,7 @@ const userModel = require('../Models/userModel');
 const catchAsync = require('../utils/CatchAsync');
 const AppRes = require('../utils/AppResponse');
 const AppError = require('../utils/AppError');
+const postModel = require('../Models/postModel');
 
 // uiniversal User variable
 var User;
@@ -14,10 +15,18 @@ exports.getUsers = catchAsync(async (req, res, next) => {
 
 // delete a User
 exports.deleteUser = catchAsync(async (req, res, next) => {
-	User = await userModel.findByIdAndDelete(req.params.id);
+	User = await userModel.findById(req.params.id);
 
 	if (!User) return next(new AppError('User not Found', 404));
 
+	if (User.email !== req.curUser.email)
+		return next(
+			new AppError('You can only delete your account', 404),
+		);
+
+	await userModel.findOneAndDelete(req.params.id);
+
+	User = {};
 	new AppRes(res, User, 200);
 });
 

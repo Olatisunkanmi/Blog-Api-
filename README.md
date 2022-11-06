@@ -147,6 +147,28 @@ Success
 
 ---
 
+### DELETE USER
+
+- Route: /posts/:id
+- Method: GET
+- Header
+
+  - Authorization: Bearer {token}
+
+- Responses
+
+Success
+
+```
+    {
+    "status": "success",
+    "data": {}
+}
+
+```
+
+---
+
 ### Create Post
 
 - Route: /posts/
