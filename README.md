@@ -150,7 +150,7 @@ Success
 ### DELETE USER
 
 - Route: /posts/:id
-- Method: GET
+- Method: DELETE
 - Header
 
   - Authorization: Bearer {token}
