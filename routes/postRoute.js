@@ -5,7 +5,10 @@ const { Protect } = require('../Controllers/auth');
 // Logged in or Not Logged In users to get all published posts
 router
 	.route('/')
-	.get(postController.Published, postController.getPosts);
+	.get(
+		postController.unprotectedPublishedPosts,
+		postController.getPosts,
+	);
 
 // Logged in or Not Logged In users to get post by Id
 router
@@ -24,7 +27,7 @@ router.route('/').post(postController.createPost);
 // Logged in user get only Posts created by them.
 router
 	.route('/articles')
-	.post(postController.sortUser, postController.getPosts);
+	.post(postController.sortByUser, postController.getPosts);
 
 // Middle ware to find all Post by id and return is invalid.
 
@@ -47,7 +50,7 @@ router
 router
 	.route('/articles/:id')
 	.post(
-		postController.unprotectedPostById,
+		postController.searchId,
 		postController.protectedPostById,
 		postController.getPostById,
 	);

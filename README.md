@@ -37,7 +37,7 @@ This is an api for a pizza app
 
 ## Base URL
 
-- somehostsite.com
+- https://sore-tan-seal-wrap.cyclic.app/api/v1
 
 ## Models
 

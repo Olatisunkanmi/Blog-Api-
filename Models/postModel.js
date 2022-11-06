@@ -42,6 +42,19 @@ const PostSchema = new Schema({
 	created_at: String,
 });
 
+// calculate reading time before updating document
+PostSchema.pre('findOneAndUpdate', function (next) {
+	let Post = this._update;
+
+	// calculate the time in minutes
+	if (Post.body) {
+		const timeToRead = readingTime(Post.body);
+		Post.reading_time = timeToRead;
+	}
+
+	next();
+});
+
 const Post = mongoose.model('Post', PostSchema);
 
 module.exports = Post;

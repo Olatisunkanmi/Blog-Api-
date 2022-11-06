@@ -34,6 +34,7 @@ exports.unprotectedPostById = catchAsync(async (req, res, next) => {
 	next();
 });
 
+// -
 exports.protectedPostById = catchAsync(async (req, res, next) => {
 	if (req.curUser.email !== Post.author) {
 		return next(
@@ -53,16 +54,22 @@ exports.protectedPostById = catchAsync(async (req, res, next) => {
 });
 
 // Middleware to query post by Published state
-exports.Published = catchAsync(async (req, res, next) => {
-	req.query.limit = '20';
-	req.query.sort = '-readCount, -readingTime, -created_at';
-	req.query.state = 'published';
+exports.unprotectedPublishedPosts = catchAsync(
+	async (req, res, next) => {
+		req.query.limit = '20';
+		req.query.sort = '-readCount, -readingTime, -created_at';
+		req.query.filter = 'read';
+		req.query.state = 'published';
 
-	next();
-});
+		next();
+	},
+);
 
 // query by username
-exports.sortUser = catchAsync(async (req, res, next) => {
+exports.sortByUser = catchAsync(async (req, res, next) => {
+	req.query.limit = '20';
+	req.query.sort = '-readCount, -readingTime, -created_at';
+	req.query.filter = 'read';
 	req.query.author = req.curUser.username;
 	next();
 });
@@ -89,7 +96,7 @@ exports.createPost = catchAsync(async (req, res, next) => {
 
 // get All Posts
 exports.getPosts = catchAsync(async (req, res, next) => {
-	// Filter query
+	// 1a.	Filter query
 	const queryObj = { ...req.query };
 	const excludedFields = ['page', 'sort', 'limit', 'fields'];
 	excludedFields.forEach((el) => delete queryObj[el]);
@@ -97,16 +104,25 @@ exports.getPosts = catchAsync(async (req, res, next) => {
 	// queryStr = JSON.parse(queryObj);
 	let query = postModel.find(queryObj);
 
-	// 4) Pagination
+	// 2. Sorting.
+	if (req.query.sort) {
+		let sortBy = req.query.sort.split(',').join(' ');
+		query = query.sort(sortBy);
+	} else {
+		query = query.sort('-created_at');
+	}
+
+	// 3. Pagination
 	const page = req.query.page * 1 || 1;
 	const limit = req.query.limit * 1 || 100;
-	//👆🏼   turn string to int
 	const skip = (page - 1) * limit;
-	query = query.skip(skip).limit(limit);
+
+	// query posts by details
+	query = await query.skip(skip).limit(limit);
+
 	if (req.query.page) {
-		const numpostModels = await postModel.countDocuments();
-		if (skip > numpostModels)
-			throw new Error('This page does not exist');
+		const postCount = await postModel.countDocuments();
+		if (skip > postCount) throw new Error('This page does not exist');
 	}
 	// !                    -----------            --Execute query
 
